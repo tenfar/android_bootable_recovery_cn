@@ -141,14 +141,14 @@ Value* FormatFn(const char* name, State* state, int argc, Expr* argv[]) {
         return NULL;
     }
     
-    ui_print("正在格式化 %s...\n", path);
+    ui_print("Formatting %s...\n", path);
     if (0 != format_volume(path)) {
         free(path);
         return StringValue(strdup(""));
     }
     
     if (strcmp(path, "/data") == 0 && has_datadata()) {
-        ui_print("格式化 /datadata...\n", path);
+        ui_print("Formatting /datadata...\n", path);
         if (0 != format_volume("/datadata")) {
             free(path);
             return StringValue(strdup(""));
@@ -319,27 +319,27 @@ int run_and_remove_extendedcommand()
     remove(EXTENDEDCOMMAND_SCRIPT);
     int i = 0;
     for (i = 20; i > 0; i--) {
-        ui_print("等待SD卡挂载 (%ds)\n", i);
+        ui_print("Waiting for SD Card to mount (%ds)\n", i);
         if (ensure_path_mounted("/sdcard") == 0) {
-            ui_print("SD卡挂载成功...\n");
+            ui_print("SD Card mounted...\n");
             break;
         }
         sleep(1);
     }
     remove("/sdcard/clockworkmod/.recoverycheckpoint");
     if (i == 0) {
-        ui_print("SD卡挂载超时... 依然继续");
+        ui_print("Timed out waiting for SD card... continuing anyways.");
     }
 
-    ui_print("校验SD卡标记...\n");
+    ui_print("Verifying SD Card marker...\n");
     struct stat st;
     if (stat("/sdcard/clockworkmod/.salted_hash", &st) != 0) {
-        ui_print("未找到SD卡标记...\n");
+        ui_print("SD Card marker not found...\n");
         if (volume_for_path("/emmc") != NULL) {
-            ui_print("校验内置SD卡标记...\n");
+            ui_print("Checking Internal SD Card marker...\n");
             ensure_path_unmounted("/sdcard");
             if (ensure_path_mounted_at_mount_point("/emmc", "/sdcard") != 0) {
-                ui_print("内置SD卡标记未找到... 依然继续.\n");
+                ui_print("Internal SD Card marker not found... continuing anyways.\n");
                 // unmount everything, and remount as normal
                 ensure_path_unmounted("/emmc");
                 ensure_path_unmounted("/sdcard");
@@ -353,7 +353,7 @@ int run_and_remove_extendedcommand()
     int ret;
 #ifdef I_AM_KOUSH
     if (0 != (ret = before_run_script(tmp))) {
-        ui_print("解析ROM Manager 脚本失败. 请确保您使用ROM Manager v4.4.0.0 或更高版本。\n");
+        ui_print("Error processing ROM Manager script. Please verify that you are performing the backup, restore, or ROM installation from ROM Manager v4.4.0.0 or higher.\n");
         return ret;
     }
 #endif
